@@ -29,7 +29,7 @@ const profile = {
   role: "Cybersecurity & Network Engineering Student | Linux | Full Stack | WordPress",
   location: "Sri Lanka",
   github: "https://github.com/Sahan-Chathumina-25",
-  linkedin: "https://www.linkedin.com/",
+  linkedin: "https://www.linkedin.com/in/sahan-chathumina-4a5723316/",
   email: "chathuminacsahan25@gmail.com",
 };
 
