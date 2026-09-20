@@ -1,0 +1,8 @@
+[submodule "Sahan-Frontend"]
+	path = Sahan-Frontend
+	url = https://github.com/Sahan-Chathumina-25/Sahan-Frontend.git
+	branch = main
+[submodule "Sahan-Backend"]
+	path = Sahan-Backend
+	url = https://github.com/Sahan-Chathumina-25/Sahan-Backend.git
+	branch = main
