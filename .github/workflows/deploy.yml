@@ -17,18 +17,24 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Sahan-Frontend
     env:
       NEXT_PUBLIC_SITE_URL: https://sahan-chathumina-25.github.io
       # Disables the contact form submit in the static demo (no /api/* on Pages).
       NEXT_PUBLIC_STATIC_EXPORT: "true"
     steps:
-      - name: Checkout
+      - name: Checkout (with submodules)
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: Sahan-Frontend/package-lock.json
       - name: Install dependencies
         run: npm ci
       - name: Lint
@@ -42,7 +48,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: Sahan-Frontend/out
 
   deploy:
     needs: build
