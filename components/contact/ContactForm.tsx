@@ -32,6 +32,14 @@ const inputClasses = (invalid: boolean) =>
       : "border-white/10 focus:border-primary/60"
   );
 
+// Static-export note: GitHub Pages serves only static files, so `/api/contact`
+// (Resend + rate-limit, see `app/api/contact/route.ts`) does not exist in the
+// deployed demo. When built with `NEXT_PUBLIC_STATIC_EXPORT=true` (set in
+// `.github/workflows/deploy.yml`), the form renders disabled with an
+// explanatory note instead of silently failing. Local `npm run dev` (flag
+// unset) keeps the full working behavior.
+const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+
 export function ContactForm() {
   const [status, setStatus] = useState<FormStatus>({ status: "idle" });
   const [modal, setModal] = useState<
@@ -46,6 +54,9 @@ export function ContactForm() {
   } = useForm<ContactInput>({ resolver: zodResolver(contactSchema) });
 
   const onSubmit = async (data: ContactInput) => {
+    // Defensive: the submit button is disabled on static export, but guard
+    // against programmatic submits too.
+    if (isStaticExport) return;
     setStatus({ status: "loading" });
     try {
       const res = await fetch("/api/contact", {
@@ -167,12 +178,23 @@ export function ContactForm() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || isStaticExport}
+          title={
+            isStaticExport
+              ? "Contact form is unavailable on the static demo"
+              : undefined
+          }
           className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-ink-950 transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         >
           {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
           {loading ? "Sending…" : "Send message"}
         </button>
+        {isStaticExport && (
+          <p role="note" className="mt-4 text-sm text-paper-dim">
+            The contact form is unavailable on this static demo — this site is
+            served from GitHub Pages with no server for message delivery.
+          </p>
+        )}
       </form>
       <FormModal result={modal} onClose={() => setModal(null)} />
     </>
